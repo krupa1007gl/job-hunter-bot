@@ -1,0 +1,165 @@
+[project]
+id = "P001"
+slug = "job-hunter-bot"
+title = "Telegram-бот «Охотник за вакансиями»"
+type = "internal"
+stage = "spec"
+status = "active"
+spec_version = "0.2"
+updated = "2026-10-28"
+next = "G1: утверждение SPEC владельцем"
+repo = ""
+
+[quality]
+cwd = "src"
+lint = []
+test = []
+security = []
+
+[[requirements]]
+id = "REQ-001"
+title = "Доступ только по allowlist Telegram ID"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-002"
+title = "Профиль владельца"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-003"
+title = "Настройка фильтров командами"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-004"
+title = "Применение фильтров до LLM"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-005"
+title = "Сбор из Хабр Карьеры через публичный RSS"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-006"
+title = "Дедупликация"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-007"
+title = "LLM-оценка релевантности"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-008"
+title = "Карточка-уведомление с кнопками"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-009"
+title = "Черновик отклика по кнопке (без отправки)"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-010"
+title = "Защита от промпт-инъекций из текста предложений"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-011"
+title = "Ручное добавление по ссылке"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-012"
+title = "Служебный HTTP API: health"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-013"
+title = "Запуск в Docker и документация для портфолио"
+priority = "must"
+status = "draft"
+
+[[requirements]]
+id = "REQ-014"
+title = "Сбор hh.ru через официальный API по токену"
+priority = "should"
+status = "draft"
+
+[[requirements]]
+id = "REQ-015"
+title = "Ежедневный дайджест"
+priority = "should"
+status = "draft"
+
+[[requirements]]
+id = "REQ-016"
+title = "Избранное"
+priority = "should"
+status = "draft"
+
+[[requirements]]
+id = "REQ-017"
+title = "Статус и включение источников"
+priority = "should"
+status = "draft"
+
+[[requirements]]
+id = "REQ-018"
+title = "Мультипользовательский режим"
+priority = "should"
+status = "draft"
+
+[[requirements]]
+id = "REQ-019"
+title = "Адаптер FL.ru (выключен по умолчанию)"
+priority = "could"
+status = "draft"
+
+[[requirements]]
+id = "REQ-020"
+title = "Адаптер Kwork (выключен по умолчанию)"
+priority = "could"
+status = "draft"
+
+[[requirements]]
+id = "REQ-021"
+title = "Межисточниковая дедупликация"
+priority = "could"
+status = "draft"
+
+[[gates]]
+id = "G1"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G2"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G4"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
