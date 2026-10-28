@@ -2,12 +2,12 @@
 id = "P001"
 slug = "job-hunter-bot"
 title = "Telegram-бот «Охотник за вакансиями»"
-type = "internal"
+type = "public"
 stage = "spec"
 status = "active"
 spec_version = "0.2"
 updated = "2026-10-28"
-next = "G1: утверждение SPEC владельцем"
+next = "product-analyst: SPEC v0.3 (multi-user + BYOK) → G1"
 repo = ""
 
 [quality]
@@ -163,3 +163,38 @@ evidence = ""
 approved_by = ""
 reason = ""
 
+
+[[gates]]
+id = "G3"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G5"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G6"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G7"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
+
+[[gates]]
+id = "G8"
+status = "pending"
+evidence = ""
+approved_by = ""
+reason = ""
