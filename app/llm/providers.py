@@ -1,6 +1,8 @@
 """Пресеты OpenAI-совместимых провайдеров (REQ-008) и защита base_url от SSRF."""
 
+import asyncio
 import ipaddress
+import socket
 from dataclasses import dataclass
 from urllib.parse import urlsplit
 
@@ -59,3 +61,26 @@ def validate_base_url(url: str) -> str:
     if ip is not None and not ip.is_global:
         raise ValueError("внутренний адрес запрещён")
     return f"https://{parts.netloc}{parts.path.rstrip('/')}"
+
+
+TRUSTED_HOSTS = {p.base_url.split("/")[2] for p in PRESETS.values() if p.base_url}
+
+
+async def ensure_public_host(base_url: str) -> None:
+    """R-02: имя «своего» провайдера не должно резолвиться во внутреннюю сеть.
+
+    Если имя не резолвится, запрос всё равно не уйдёт. Остаточный риск — DNS rebinding между
+    проверкой и запросом; для v1 принят (см. REVIEW), закрывается пиннингом IP в v1.1.
+    """
+    host = base_url.split("/")[2].split(":")[0].lower()
+    if host in TRUSTED_HOSTS:
+        return
+    loop = asyncio.get_running_loop()
+    try:
+        infos = await loop.run_in_executor(None, socket.getaddrinfo, host, 443)
+    except OSError:
+        return
+    for info in infos:
+        addr = info[4][0].split("%")[0]
+        if not ipaddress.ip_address(addr).is_global:
+            raise ValueError("адрес провайдера ведёт во внутреннюю сеть")

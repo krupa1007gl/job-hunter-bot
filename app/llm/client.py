@@ -2,7 +2,7 @@
 
 import httpx
 
-from .providers import validate_base_url
+from .providers import ensure_public_host, validate_base_url
 
 USER_MESSAGES = {
     "auth": "провайдер не принял ключ — проверь ключ и права",
@@ -35,6 +35,7 @@ async def chat(
 ) -> str:
     try:
         base = validate_base_url(base_url)
+        await ensure_public_host(base)
     except ValueError:
         raise LLMError("config") from None
     try:

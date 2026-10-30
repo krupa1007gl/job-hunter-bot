@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+aiosqlite:///./dev.db"
     allowlist: str = ""  # пусто — бот открыт всем; иначе Telegram ID через запятую (закрытая бета)
     poll_minutes: int = 30
+    source_delay: float = 2.0  # пауза между запросами к источникам, сек (REQ-005.3)
     llm_daily_limit: int = 100
     rate_limit_per_min: int = 20
     hh_token: SecretStr = SecretStr("")

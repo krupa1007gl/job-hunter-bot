@@ -24,6 +24,18 @@ def format_salary(salary_from: int | None, salary_to: int | None, currency: str 
     return "не указана"
 
 
+def escape_cut(text: str, n: int) -> str:
+    """Экранирует и обрезает так, чтобы результат ≤ n и не рвал HTML-сущности."""
+    out, size = [], 0
+    for ch in text or "":
+        e = escape(ch)
+        if size + len(e) > n - 1:
+            return "".join(out) + "…"
+        out.append(e)
+        size += len(e)
+    return "".join(out)
+
+
 def _cut(s: str, n: int) -> str:
     return s if len(s) <= n else s[: n - 1] + "…"
 

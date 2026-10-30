@@ -10,7 +10,7 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 
 from ..core import prompts
-from ..core.cards import render_card
+from ..core.cards import escape_cut, render_card
 from ..core.crypto import mask_key
 from ..core.types import OfferData
 from ..core.urls import detect_source, normalize_url
@@ -52,7 +52,7 @@ HELP = (
     "/format remote|office|hybrid|any\n"
     "/city Москва | нет\n"
     "/threshold 60 — порог балла (0–100)\n"
-    "/ai — подключить свой AI-ключ, /ai_off — отключить\n"
+    "/ai — подключить свой AI-ключ, /ai off — отключить\n"
     "/privacy — данные, /delete_me — удалить аккаунт\n\n"
     "Пришли ссылку на вакансию hh.ru, Хабр Карьеры, Kwork или FL.ru — оценю её и помогу с откликом."
 )
@@ -280,9 +280,11 @@ async def filter_value_cmd(message: Message, command: CommandObject, session, us
 
 
 @router.message(Command("ai"))
-async def ai_cmd(message: Message, session, user, state: FSMContext):
+async def ai_cmd(message: Message, command: CommandObject, session, user, state: FSMContext):
     if not _need_user(user):
         return await message.answer("Сначала /start")
+    if (command.args or "").strip().lower() == "off":  # REQ-007.5: «/ai off»
+        return await ai_off(message, session, user)
     await state.clear()
     key = await users.get_ai_key(session, user)
     status = (
@@ -411,7 +413,7 @@ async def card_action(cb: CallbackQuery, session, user, settings, cipher, http):
     if action == "more":
         await cb.answer()
         text = offer.description[:3500] or "Описание не найдено — открой ссылку."
-        return await cb.message.answer(f"<b>{escape(offer.title)}</b>\n\n{escape(text)}")
+        return await cb.message.answer(f"<b>{escape_cut(offer.title, 300)}</b>\n\n{escape_cut(text, 3500)}")
     key = await users.get_ai_key(session, user)
     if key is None:
         return await cb.answer("Для черновика подключи свой AI-ключ: /ai", show_alert=True)
@@ -422,14 +424,16 @@ async def card_action(cb: CallbackQuery, session, user, settings, cipher, http):
         draft = await llm(prompts.build_draft_messages(offers.to_data(offer), user.profile or {}))
     except llm_client.LLMError as e:
         return await wait.edit_text(f"Не получилось: {e.user_message}")
-    await wait.edit_text(f"<b>Черновик отклика</b> (проверь и отправь сам):\n\n{escape(draft[:3800])}")
+    await wait.edit_text(f"<b>Черновик отклика</b> (проверь и отправь сам):\n\n{escape_cut(draft, 3800)}")
 
 
 # ---------- ручная ссылка и текст (REQ-013) ----------
 
 
-async def _evaluate_and_send(message: Message, session, user, settings, cipher, http, data: OfferData):
-    row = await offers.upsert_one(session, data)
+async def _evaluate_and_send(
+    message: Message, session, user, settings, cipher, http, data: OfferData, private: bool = False
+):
+    row = await offers.upsert_one(session, data, private_for=user.id if private else None)
     llm = make_llm(http, cipher, await users.get_ai_key(session, user))
     d = await offers.evaluate(session, user, row, llm=llm, daily_limit=settings.llm_daily_limit, manual=True)
     if d is None:
@@ -446,7 +450,7 @@ async def manual_text(message: Message, session, user, settings, cipher, http, s
     text = message.text.strip()[:8000]
     title = text.splitlines()[0][:300] if text else "Без названия"
     offer = OfferData(source="manual", external_id=data["url"], url=data["url"], title=title, description=text)
-    await _evaluate_and_send(message, session, user, settings, cipher, http, offer)
+    await _evaluate_and_send(message, session, user, settings, cipher, http, offer, private=True)
 
 
 @router.message(F.text)

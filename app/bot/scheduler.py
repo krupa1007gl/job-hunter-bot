@@ -31,6 +31,22 @@ def build_queries(filters_list: list[dict], stacks: list[list[str]]) -> set[str]
     return queries
 
 
+class _GuardedLLM:
+    def __init__(self, inner):
+        self.inner, self.failed = inner, False
+
+    async def __call__(self, messages):
+        try:
+            return await self.inner(messages)
+        except Exception:
+            self.failed = True
+            raise
+
+
+def _guard(llm):
+    return _GuardedLLM(llm) if llm is not None else None
+
+
 async def _active_users(s) -> list[User]:
     rows = (await s.scalars(select(User).where(User.consent_at.is_not(None), User.is_onboarded.is_(True)))).all()
     return list(rows)
@@ -57,14 +73,17 @@ async def run_cycle(sm, http: httpx.AsyncClient, settings: Settings, cipher: Key
             except SourceError as e:
                 stats["errors"] += 1
                 log.warning("source %s failed: %s", name, e)
-            await asyncio.sleep(0)
+            if name == "habr" or hh_client.enabled:
+                await asyncio.sleep(settings.source_delay)
 
     async with sm() as s:
         new = await offers.ingest(s, collected)
         stats["new_offers"] = len(new)
         for user in await _active_users(s):
-            llm = make_llm(http, cipher, await users.get_ai_key(s, user))
+            llm = _guard(make_llm(http, cipher, await users.get_ai_key(s, user)))
             for row in new:
+                if llm is not None and llm.failed:  # R-04: провайдер упал — остаток цикла без LLM
+                    llm = None
                 d = await offers.evaluate(s, user, row, llm=llm, daily_limit=settings.llm_daily_limit)
                 if d is None or d.status != "sent":
                     continue

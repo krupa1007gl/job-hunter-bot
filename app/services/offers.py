@@ -5,6 +5,7 @@ from collections.abc import Awaitable, Callable
 from datetime import timedelta
 
 from sqlalchemy import delete, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core import filtering, llm_parse, prompts, scoring
@@ -36,12 +37,17 @@ def to_data(o: Offer) -> OfferData:
     )
 
 
-async def ingest(s: AsyncSession, items: list[OfferData]) -> list[Offer]:
+def private_key(user_id: int, url: str) -> str:
+    """Ручной текст пользователя хранится под личным ключом и не смешивается с общими вакансиями (R-01)."""
+    return f"manual:{user_id}:{normalize_url(url)}"
+
+
+async def ingest(s: AsyncSession, items: list[OfferData], private_for: int | None = None) -> list[Offer]:
     """Сохраняет новые предложения, возвращает только новые."""
     new: list[Offer] = []
     seen: set[str] = set()
     for it in items:
-        norm = normalize_url(it.url)
+        norm = private_key(private_for, it.url) if private_for is not None else normalize_url(it.url)
         if norm in seen:
             continue
         seen.add(norm)
@@ -51,7 +57,7 @@ async def ingest(s: AsyncSession, items: list[OfferData]) -> list[Offer]:
             source=it.source,
             external_id=it.external_id[:300],
             url_norm=norm,
-            url=norm,
+            url=normalize_url(it.url),
             title=it.title[:500],
             company=(it.company or None) and it.company[:300],
             description=(it.description or "")[:8000],
@@ -68,12 +74,19 @@ async def ingest(s: AsyncSession, items: list[OfferData]) -> list[Offer]:
     return new
 
 
-async def upsert_one(s: AsyncSession, item: OfferData) -> Offer:
-    norm = normalize_url(item.url)
+async def upsert_one(s: AsyncSession, item: OfferData, private_for: int | None = None) -> Offer:
+    norm = private_key(private_for, item.url) if private_for is not None else normalize_url(item.url)
     existing = await s.scalar(select(Offer).where(Offer.url_norm == norm))
     if existing:
+        if private_for is not None:  # пользователь прислал текст заново — обновляем его личную копию
+            existing.title, existing.description = item.title[:500], (item.description or "")[:8000]
+            await s.commit()
         return existing
-    (row,) = await ingest(s, [item])
+    try:
+        (row,) = await ingest(s, [item], private_for=private_for)
+    except IntegrityError:  # параллельная вставка того же URL (R-08)
+        await s.rollback()
+        return await s.scalar(select(Offer).where(Offer.url_norm == norm))
     return row
 
 
