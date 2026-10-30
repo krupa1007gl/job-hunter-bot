@@ -21,9 +21,18 @@ USER_STATUSES = {"hidden", "favorite"}
 
 def to_data(o: Offer) -> OfferData:
     return OfferData(
-        source=o.source, external_id=o.external_id, url=o.url, title=o.title, company=o.company,
-        description=o.description or "", salary_from=o.salary_from, salary_to=o.salary_to,
-        currency=o.currency, city=o.city, remote=o.remote, published_at=o.published_at,
+        source=o.source,
+        external_id=o.external_id,
+        url=o.url,
+        title=o.title,
+        company=o.company,
+        description=o.description or "",
+        salary_from=o.salary_from,
+        salary_to=o.salary_to,
+        currency=o.currency,
+        city=o.city,
+        remote=o.remote,
+        published_at=o.published_at,
     )
 
 
@@ -39,10 +48,19 @@ async def ingest(s: AsyncSession, items: list[OfferData]) -> list[Offer]:
         if await s.scalar(select(Offer.id).where(Offer.url_norm == norm)):
             continue
         row = Offer(
-            source=it.source, external_id=it.external_id[:300], url_norm=norm, url=norm,
-            title=it.title[:500], company=(it.company or None) and it.company[:300],
-            description=(it.description or "")[:8000], salary_from=it.salary_from, salary_to=it.salary_to,
-            currency=it.currency, city=it.city, remote=it.remote, published_at=it.published_at,
+            source=it.source,
+            external_id=it.external_id[:300],
+            url_norm=norm,
+            url=norm,
+            title=it.title[:500],
+            company=(it.company or None) and it.company[:300],
+            description=(it.description or "")[:8000],
+            salary_from=it.salary_from,
+            salary_to=it.salary_to,
+            currency=it.currency,
+            city=it.city,
+            remote=it.remote,
+            published_at=it.published_at,
         )
         s.add(row)
         new.append(row)
@@ -105,7 +123,8 @@ async def evaluate(
 
 async def get_offer_for_user(s: AsyncSession, user: User, offer_id: int) -> Offer | None:
     return await s.scalar(
-        select(Offer).join(Delivery, Delivery.offer_id == Offer.id)
+        select(Offer)
+        .join(Delivery, Delivery.offer_id == Offer.id)
         .where(Offer.id == offer_id, Delivery.user_id == user.id)
     )
 

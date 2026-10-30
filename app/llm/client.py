@@ -25,8 +25,13 @@ class LLMError(Exception):
 
 
 async def chat(
-    http: httpx.AsyncClient, base_url: str, model: str, api_key: str, messages: list[dict],
-    timeout: float = 30.0, max_tokens: int = 700,
+    http: httpx.AsyncClient,
+    base_url: str,
+    model: str,
+    api_key: str,
+    messages: list[dict],
+    timeout: float = 30.0,
+    max_tokens: int = 700,
 ) -> str:
     try:
         base = validate_base_url(base_url)
@@ -54,5 +59,12 @@ async def chat(
 
 
 async def check_key(http: httpx.AsyncClient, base_url: str, model: str, api_key: str) -> None:
-    await chat(http, base_url, model, api_key, [{"role": "user", "content": "Ответь одним словом: ок"}],
-               timeout=20.0, max_tokens=5)
+    await chat(
+        http,
+        base_url,
+        model,
+        api_key,
+        [{"role": "user", "content": "Ответь одним словом: ок"}],
+        timeout=20.0,
+        max_tokens=5,
+    )

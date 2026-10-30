@@ -19,3 +19,12 @@
 - 2026-10-30T00:10:52Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
 - 2026-10-30T00:10:52Z | studio | - | PASSED 2026-10-30T00:10:52Z check: lock=ok lint=0 test=0 security=0
 - 2026-10-30T00:10:59Z | orchestrator | - | T-002, T-003 verified
+- 2026-10-30T00:12:15Z | studio | - | tests.lock обновлён: 6 файлов в tests/
+- 2026-10-30T00:12:15Z | qa-engineer | - | T-004 тесты добавлены; в test_services.py только сортировка импортов (isort), логика не менялась
+- 2026-10-30T00:15:25Z | studio | - | tests.lock обновлён: 7 файлов в tests/
+- 2026-10-30T00:15:25Z | qa-engineer | - | Добавлены сквозные тесты бота tests/test_bot_flow.py (10 сценариев) ПОСЛЕ кода handlers — регрессия, не TDD; scoring: веса подняты (title 30, body 15, уровень 25), тесты core не менялись
+- 2026-10-30T00:15:25Z | studio | - | check lock: tests.lock ok (7 файлов)
+- 2026-10-30T00:15:25Z | studio | - | check lint: `.venv/bin/ruff check app tests` → exit 0 | All checks passed!
+- 2026-10-30T00:15:32Z | studio | - | check test: `.venv/bin/python -m pytest -q --cov=app --cov-fail-under=70` → exit 0 | 154 passed in 5.47s
+- 2026-10-30T00:15:32Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
+- 2026-10-30T00:15:32Z | studio | - | PASSED 2026-10-30T00:15:32Z check: lock=ok lint=0 test=0 security=0

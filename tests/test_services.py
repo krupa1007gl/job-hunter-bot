@@ -4,11 +4,11 @@ from dataclasses import replace
 from datetime import date, timedelta
 
 import pytest
-from app.db import init_db, make_engine, make_sessionmaker
 from sqlalchemy import func, select
 
 from app import models
 from app.core.crypto import KeyCipher, generate_master_key
+from app.db import init_db, make_engine, make_sessionmaker
 from app.services import llm_usage, offers, users
 
 

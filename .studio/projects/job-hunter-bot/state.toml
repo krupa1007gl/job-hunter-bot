@@ -193,11 +193,11 @@ title = "Бот, планировщик, API"
 owner = "backend-developer"
 requirements = ["REQ-016"]
 depends_on = ["T-002", "T-003"]
-status = "planned"
+status = "verified"
 acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
-tests = []
-files = []
-evidence = []
+tests = ["tests/test_app.py", "tests/test_bot_flow.py"]
+files = ["app/bot", "app/api.py", "app/config.py", "app/main.py", "app/services/ai.py"]
+evidence = ["2026-10-30 check PASSED: 154 passed (10 сквозных сценариев бота), coverage 85%, ruff 0, bandit 0; main.py не покрыт — проверка запуском на G6"]
 attempts = 0
 
 [[tasks]]

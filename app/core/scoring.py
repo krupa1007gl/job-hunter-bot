@@ -17,14 +17,14 @@ def keyword_score(offer: OfferData, profile: dict, filters: dict) -> int:
     else:
         hits_title = sum(1 for t in terms if t in title)
         hits_body = sum(1 for t in terms if t in body and t not in title)
-        base = min(70, hits_title * 25 + hits_body * 12)
+        base = min(70, hits_title * 30 + hits_body * 15)
 
     level = profile.get("level")
     words = _LEVEL_WORDS.get(level, ())
     if level == "intern":
         words = words + _LEVEL_WORDS["junior"]
     if any(w in title or w in body for w in words):
-        base += 20
+        base += 25
     if offer.remote and (profile.get("work_format") in ("remote", "any", None)):
         base += 5
     if base and (offer.salary_from or offer.salary_to):
