@@ -3,11 +3,11 @@ id = "P001"
 slug = "job-hunter-bot"
 title = "Telegram-бот «Охотник за вакансиями»"
 type = "public"
-stage = "implementation"
+stage = "testing"
 status = "active"
 spec_version = "0.3"
 updated = "2026-10-30"
-next = "T-001: тесты ядра (qa) → lock → код"
+next = "G3: независимое ревью (code-reviewer)"
 repo = ""
 
 [quality]
@@ -206,11 +206,11 @@ title = "Docker, compose, CI, README"
 owner = "backend-developer"
 requirements = ["REQ-017"]
 depends_on = ["T-004"]
-status = "planned"
+status = "done"
 acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
-tests = []
-files = []
-evidence = []
+tests = ["tests/test_repo.py"]
+files = ["Dockerfile", "docker-compose.yml", ".env.example", ".github/workflows/ci.yml", "README.md"]
+evidence = ["2026-10-30: check PASSED (158 passed); wheel собирается; smoke реального API: /health 200, /internal/stats 401, /docs 404; docker build НЕ проверен — нет демона в песочнице, проверит CI/VPS"]
 attempts = 0
 
 [[gates]]
