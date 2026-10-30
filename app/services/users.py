@@ -4,7 +4,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ..core.crypto import KeyCipher
-from ..models import AIKey, Delivery, LLMUsage, User, utcnow
+from ..models import AIKey, Delivery, LLMUsage, Offer, User, utcnow
 
 SEARCH_TYPES = {"internship", "job", "freelance"}
 LEVELS = {"intern", "junior", "middle"}
@@ -180,5 +180,8 @@ async def delete_ai_key(s: AsyncSession, user: User) -> None:
 async def delete_user(s: AsyncSession, user: User) -> None:
     for model in (AIKey, Delivery, LLMUsage):
         await s.execute(delete(model).where(model.user_id == user.id))
+    private = select(Offer.id).where(Offer.url_norm.like(f"manual:{user.id}:%"))  # личные ручные тексты (N-01)
+    await s.execute(delete(Delivery).where(Delivery.offer_id.in_(private)))
+    await s.execute(delete(Offer).where(Offer.url_norm.like(f"manual:{user.id}:%")))
     await s.execute(delete(User).where(User.id == user.id))
     await s.commit()

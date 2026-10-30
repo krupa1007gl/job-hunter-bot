@@ -40,3 +40,9 @@
 - 2026-10-30T00:20:42Z | studio | - | check test: `.venv/bin/python -m pytest -q --cov=app --cov-fail-under=70` → exit 0 | 166 passed in 21.67s
 - 2026-10-30T00:20:42Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
 - 2026-10-30T00:20:42Z | studio | - | PASSED 2026-10-30T00:20:42Z check: lock=ok lint=0 test=0 security=0
+- 2026-10-30T00:21:44Z | studio | - | tests.lock обновлён: 9 файлов в tests/
+- 2026-10-30T00:22:10Z | studio | - | check lock: tests.lock ok (9 файлов)
+- 2026-10-30T00:22:10Z | studio | - | check lint: `.venv/bin/ruff check app tests` → exit 0 | All checks passed!
+- 2026-10-30T00:22:34Z | studio | - | check test: `.venv/bin/python -m pytest -q --cov=app --cov-fail-under=70` → exit 0 | 168 passed in 21.92s
+- 2026-10-30T00:22:34Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
+- 2026-10-30T00:22:34Z | studio | - | PASSED 2026-10-30T00:22:34Z check: lock=ok lint=0 test=0 security=0

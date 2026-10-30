@@ -137,3 +137,37 @@ async def test_ai_off_with_space(env):  # noqa: F811
     assert "Ключ удалён" in h.last()
     async with sm_() as s:
         assert await users.get_ai_key(s, await users.get_user(s, 1)) is None
+
+
+# R-08 (итерация 2): после конфликта вставки объект пользователя остаётся рабочим
+async def test_upsert_conflict_keeps_session_usable(sm, profile, offer, monkeypatch):
+    async with sm() as s1, sm() as s2:
+        u = await _user(s2, 1, profile)
+        await offers.upsert_one(s1, offer)  # «параллельный» запрос уже вставил строку
+        real_scalar = s2.scalar
+        calls = {"n": 0}
+
+        async def first_lookup_misses(stmt, *a, **k):
+            calls["n"] += 1
+            return None if calls["n"] == 1 else await real_scalar(stmt, *a, **k)
+
+        monkeypatch.setattr(s2, "scalar", first_lookup_misses)
+        row = await offers.upsert_one(s2, offer)
+        monkeypatch.setattr(s2, "scalar", real_scalar)
+        d = await offers.evaluate(s2, u, row, llm=None, daily_limit=0, manual=True)
+        assert row.id and d.user_id == u.id
+
+
+# N-01: /delete_me удаляет и личные ручные тексты пользователя
+async def test_delete_user_removes_private_offers(sm, profile, offer):
+    from sqlalchemy import func, select
+
+    from app.models import Offer
+
+    async with sm() as s:
+        u = await _user(s, 1, profile)
+        await offers.upsert_one(s, replace(offer, source="manual"), private_for=u.id)
+        await offers.ingest(s, [offer])
+        await users.delete_user(s, u)
+        assert await s.scalar(select(func.count()).select_from(Offer).where(Offer.url_norm.like("manual:%"))) == 0
+        assert await s.scalar(select(func.count()).select_from(Offer)) == 1

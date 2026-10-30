@@ -42,6 +42,24 @@ def private_key(user_id: int, url: str) -> str:
     return f"manual:{user_id}:{normalize_url(url)}"
 
 
+def _new_row(it: OfferData, norm: str) -> Offer:
+    return Offer(
+        source=it.source,
+        external_id=it.external_id[:300],
+        url_norm=norm,
+        url=normalize_url(it.url),
+        title=it.title[:500],
+        company=(it.company or None) and it.company[:300],
+        description=(it.description or "")[:8000],
+        salary_from=it.salary_from,
+        salary_to=it.salary_to,
+        currency=it.currency,
+        city=it.city,
+        remote=it.remote,
+        published_at=it.published_at,
+    )
+
+
 async def ingest(s: AsyncSession, items: list[OfferData], private_for: int | None = None) -> list[Offer]:
     """Сохраняет новые предложения, возвращает только новые."""
     new: list[Offer] = []
@@ -82,11 +100,13 @@ async def upsert_one(s: AsyncSession, item: OfferData, private_for: int | None =
             existing.title, existing.description = item.title[:500], (item.description or "")[:8000]
             await s.commit()
         return existing
+    row = _new_row(item, norm)
     try:
-        (row,) = await ingest(s, [item], private_for=private_for)
-    except IntegrityError:  # параллельная вставка того же URL (R-08)
-        await s.rollback()
+        async with s.begin_nested():  # savepoint: конфликт не откатывает и не «протухает» всю сессию (R-08)
+            s.add(row)
+    except IntegrityError:
         return await s.scalar(select(Offer).where(Offer.url_norm == norm))
+    await s.commit()
     return row
 
 
