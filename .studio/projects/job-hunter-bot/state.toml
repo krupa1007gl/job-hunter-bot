@@ -3,155 +3,221 @@ id = "P001"
 slug = "job-hunter-bot"
 title = "Telegram-бот «Охотник за вакансиями»"
 type = "public"
-stage = "spec"
+stage = "implementation"
 status = "active"
 spec_version = "0.3"
 updated = "2026-10-30"
-next = "G1: утверждение SPEC v0.3 владельцем"
+next = "T-001: тесты ядра (qa) → lock → код"
 repo = ""
 
 [quality]
-cwd = "src"
-lint = []
-test = []
-security = []
+cwd = "../../.."
+lint = [".venv/bin/ruff check app tests"]
+test = [".venv/bin/python -m pytest -q --cov=app --cov-fail-under=70"]
+security = [".venv/bin/bandit -q -r app -ll"]
+
 [[requirements]]
 id = "REQ-002"
 title = "Профиль"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-004"
 title = "Фильтрация до оценки"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-006"
 title = "Дедупликация"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-008"
 title = "Провайдеры через OpenAI-совместимые пресеты"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-010"
 title = "Карточка с кнопками"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-012"
 title = "Защита от промпт-инъекций"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-014"
 title = "Изоляция и удаление данных"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-016"
 title = "Служебный API"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-018"
 title = "Адаптер hh.ru по токену"
 priority = "should"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-020"
 title = "Дайджест"
 priority = "should"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-001"
 title = "Регистрация и согласие"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-003"
 title = "Фильтры"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-005"
 title = "Сбор из RSS Хабр Карьеры"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-007"
 title = "Подключение AI-ключа (BYOK)"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-009"
 title = "Оценка релевантности с запасной оценкой"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-011"
 title = "Черновик отклика"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-013"
 title = "Ручное добавление по ссылке"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-015"
 title = "Rate limit"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-017"
 title = "Запуск и документация"
 priority = "must"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-019"
 title = "Mini App онбординга и настроек"
 priority = "should"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-021"
 title = "Избранное"
 priority = "should"
-status = "draft"
+status = "approved"
 
 [[requirements]]
 id = "REQ-022"
 title = "Автосбор фриланс-заказов легальным путём"
 priority = "could"
-status = "draft"
+status = "approved"
+
+[[tasks]]
+id = "T-001"
+title = "Ядро app/core и пресеты провайдеров"
+owner = "backend-developer"
+requirements = ["REQ-004", "REQ-006", "REQ-008", "REQ-009", "REQ-010", "REQ-012", "REQ-015"]
+depends_on = []
+status = "verified"
+acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
+tests = ["tests/test_core.py"]
+files = ["app/core", "app/llm/providers.py", "tests/test_core.py"]
+evidence = ["2026-10-30 check PASSED: lock ok, ruff 0, 64 passed, bandit 0"]
+attempts = 0
+
+[[tasks]]
+id = "T-002"
+title = "Модели и services"
+owner = "backend-developer"
+requirements = ["REQ-001", "REQ-002", "REQ-003", "REQ-007", "REQ-011", "REQ-014"]
+depends_on = ["T-001"]
+status = "planned"
+acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
+tests = []
+files = []
+evidence = []
+attempts = 0
+
+[[tasks]]
+id = "T-003"
+title = "Источники и LLM-клиент"
+owner = "backend-developer"
+requirements = ["REQ-005", "REQ-013", "REQ-018"]
+depends_on = ["T-001"]
+status = "planned"
+acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
+tests = []
+files = []
+evidence = []
+attempts = 0
+
+[[tasks]]
+id = "T-004"
+title = "Бот, планировщик, API"
+owner = "backend-developer"
+requirements = ["REQ-016"]
+depends_on = ["T-002", "T-003"]
+status = "planned"
+acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
+tests = []
+files = []
+evidence = []
+attempts = 0
+
+[[tasks]]
+id = "T-005"
+title = "Docker, compose, CI, README"
+owner = "backend-developer"
+requirements = ["REQ-017"]
+depends_on = ["T-004"]
+status = "planned"
+acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
+tests = []
+files = []
+evidence = []
+attempts = 0
 
 [[gates]]
 id = "G1"
-status = "pending"
-evidence = ""
-approved_by = ""
+status = "passed"
+evidence = "SPEC.md v0.3, утверждено владельцем 2026-10-30"
+approved_by = "owner"
 reason = ""
 
 [[gates]]
@@ -202,3 +268,9 @@ status = "pending"
 evidence = ""
 approved_by = ""
 reason = ""
+
+[[decisions]]
+id = "ADR-001"
+title = "create_all вместо Alembic в v1"
+file = "ARCHITECTURE.md"
+status = "accepted"

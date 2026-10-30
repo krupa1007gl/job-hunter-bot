@@ -4,3 +4,11 @@
 - 2026-10-28T09:17:30Z | product-analyst | - | SPEC v0.2 draft: 21 REQ (13 must). hh.ru API — should (анонимный поиск закрыт по вторичным источникам), FL.ru/Kwork — could, выкл.
 - 2026-10-28T09:35:20Z | orchestrator | - | G1 не пройден: владелец меняет концепцию — мультипользовательский бот + Mini App, модель BYOK (бюджет LLM 0 ₽), без парсинга hh/Kwork/FL.ru, MCP-коннектор для Claude — этап 2. type → public.
 - 2026-10-30T00:03:45Z | orchestrator | - | SPEC v0.3 (lite): multi-user, BYOK, 17 must / 4 should / 1 could; Mini App, дайджест, избранное — v1.1; MCP — этап 2
+- 2026-10-30T00:04:27Z | owner | - | G1 passed: SPEC v0.3 утверждён
+- 2026-10-30T00:06:32Z | studio | - | tests.lock обновлён: 3 файлов в tests/
+- 2026-10-30T00:07:35Z | studio | - | check lock: tests.lock ok (3 файлов)
+- 2026-10-30T00:07:35Z | studio | - | check lint: `.venv/bin/ruff check app tests` → exit 0 | All checks passed!
+- 2026-10-30T00:07:36Z | studio | - | check test: `.venv/bin/python -m pytest -q --cov=app --cov-fail-under=70` → exit 0 | 64 passed in 0.11s
+- 2026-10-30T00:07:36Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
+- 2026-10-30T00:07:36Z | studio | - | PASSED 2026-10-30T00:07:36Z check: lock=ok lint=0 test=0 security=0
+- 2026-10-30T00:07:46Z | orchestrator | - | T-001 verified (lite: тесты до кода, lock, check)
