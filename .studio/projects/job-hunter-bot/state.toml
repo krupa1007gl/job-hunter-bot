@@ -167,11 +167,11 @@ title = "Модели и services"
 owner = "backend-developer"
 requirements = ["REQ-001", "REQ-002", "REQ-003", "REQ-007", "REQ-011", "REQ-014"]
 depends_on = ["T-001"]
-status = "planned"
+status = "verified"
 acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
-tests = []
-files = []
-evidence = []
+tests = ["tests/test_services.py"]
+files = ["app/models.py", "app/db.py", "app/services"]
+evidence = ["2026-10-30 check PASSED: lock ok, ruff 0, 107 passed, bandit 0"]
 attempts = 0
 
 [[tasks]]
@@ -180,11 +180,11 @@ title = "Источники и LLM-клиент"
 owner = "backend-developer"
 requirements = ["REQ-005", "REQ-013", "REQ-018"]
 depends_on = ["T-001"]
-status = "planned"
+status = "verified"
 acceptance = ["тесты задачи зелёные", "studio.py check exit 0"]
-tests = []
-files = []
-evidence = []
+tests = ["tests/test_sources.py"]
+files = ["app/sources", "app/llm/client.py"]
+evidence = ["2026-10-30 check PASSED: lock ok, ruff 0, 107 passed, bandit 0"]
 attempts = 0
 
 [[tasks]]

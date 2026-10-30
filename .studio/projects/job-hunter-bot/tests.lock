@@ -1,9 +1,11 @@
 {
   "dir": "tests",
-  "locked_at": "2026-10-30T00:06:32Z",
+  "locked_at": "2026-10-30T00:09:22Z",
   "files": {
     "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "conftest.py": "ce16a743cc8b8d7e86d5452c2cbbd21988fca9098b424878febe25230b688231",
-    "test_core.py": "902d8bebb7e6aa4aa168947b1f9364429c203a6fb7bcdddea6b7b82a935fcd82"
+    "test_core.py": "902d8bebb7e6aa4aa168947b1f9364429c203a6fb7bcdddea6b7b82a935fcd82",
+    "test_services.py": "661f844a563509cc639b4e4d9ee8ea5340f480bb44fe28fe49354df5d1cf5e28",
+    "test_sources.py": "733b3f9b3e90fa76e2530016ca583ef1926600663a9917cf6df19a0fb2e195d2"
   }
 }

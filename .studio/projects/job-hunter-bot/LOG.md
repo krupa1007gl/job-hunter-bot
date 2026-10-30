@@ -12,3 +12,10 @@
 - 2026-10-30T00:07:36Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
 - 2026-10-30T00:07:36Z | studio | - | PASSED 2026-10-30T00:07:36Z check: lock=ok lint=0 test=0 security=0
 - 2026-10-30T00:07:46Z | orchestrator | - | T-001 verified (lite: тесты до кода, lock, check)
+- 2026-10-30T00:09:22Z | studio | - | tests.lock обновлён: 5 файлов в tests/
+- 2026-10-30T00:10:51Z | studio | - | check lock: tests.lock ok (5 файлов)
+- 2026-10-30T00:10:51Z | studio | - | check lint: `.venv/bin/ruff check app tests` → exit 0 | All checks passed!
+- 2026-10-30T00:10:52Z | studio | - | check test: `.venv/bin/python -m pytest -q --cov=app --cov-fail-under=70` → exit 0 | 107 passed in 0.98s
+- 2026-10-30T00:10:52Z | studio | - | check security: `.venv/bin/bandit -q -r app -ll` → exit 0 | 
+- 2026-10-30T00:10:52Z | studio | - | PASSED 2026-10-30T00:10:52Z check: lock=ok lint=0 test=0 security=0
+- 2026-10-30T00:10:59Z | orchestrator | - | T-002, T-003 verified
