@@ -3,11 +3,11 @@ id = "P001"
 slug = "job-hunter-bot"
 title = "Telegram-бот «Охотник за вакансиями»"
 type = "public"
-stage = "testing"
+stage = "acceptance"
 status = "active"
 spec_version = "0.3"
 updated = "2026-10-30"
-next = "G3: независимое ревью (code-reviewer)"
+next = "G6: приёмка владельцем по ACCEPTANCE.md (нужен push в GitHub и запуск)"
 repo = ""
 
 [quality]
@@ -229,22 +229,22 @@ reason = ""
 
 [[gates]]
 id = "G4"
-status = "pending"
-evidence = ""
+status = "passed"
+evidence = "2026-10-30 check PASSED: 168 passed, coverage ≥70%, ruff 0, bandit 0"
 approved_by = ""
 reason = ""
 
 [[gates]]
 id = "G3"
-status = "pending"
-evidence = ""
+status = "passed"
+evidence = "REVIEW.md: approved после 3 итераций, 758609d"
 approved_by = ""
 reason = ""
 
 [[gates]]
 id = "G5"
-status = "pending"
-evidence = ""
+status = "passed"
+evidence = "ревью безопасности R-01/R-02/N-01 закрыты; bandit 0; gitleaks — в CI после push"
 approved_by = ""
 reason = ""
 
